@@ -15,9 +15,11 @@ type MenuProps = {
 export default function Transporte({menuData}: MenuProps) {
   const [velocidade, setVelocidade] = useState(0);
   const [intervalId, setIntervalId] = useState<number>(0);
+  const [isButtonPressed, setIsButtonPressed] = useState(true);
 
   const iniciarIncremento = () => {
-    if (menuData && velocidade < 800) {
+    setIsButtonPressed(false);
+    if (menuData && velocidade < 800 && isButtonPressed) {
     const id: number = setInterval(() => {
         
       setVelocidade((prevVelocidade) => {
@@ -32,7 +34,8 @@ export default function Transporte({menuData}: MenuProps) {
   };
 
   const iniciarDecremento = () => {
-    if (menuData && velocidade > 0) {
+    setIsButtonPressed(false);
+    if (menuData && velocidade > 0 && isButtonPressed) {
       const id: number = setInterval(() => {
           
         setVelocidade((prevVelocidade) => {
@@ -46,7 +49,12 @@ export default function Transporte({menuData}: MenuProps) {
   }else{return}
   };
 
+  const bloquearCliqueDireito = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+  }
+  
   const pararIncremento = () => {
+    setIsButtonPressed(true);
     clearInterval(intervalId);
     setIntervalId(0);
   };
@@ -54,8 +62,8 @@ export default function Transporte({menuData}: MenuProps) {
     <div className="flex gap-5 flex-col">
       <h1>Velocidade: {velocidade.toFixed(2)}Km/h</h1>
       <div className="flex gap-4">
-        <button className="bg-green-300 text-black hover:bg-green-200 p-2 rounded select-none"  onMouseDown={iniciarIncremento} onMouseUp={pararIncremento} onTouchStart={iniciarIncremento} onTouchEnd={pararIncremento}>Acelerar</button>
-        <button className="bg-red-300 text-black hover:bg-red-200 p-2 rounded select-none" onMouseDown={iniciarDecremento} onMouseUp={pararIncremento} onTouchStart={iniciarDecremento} onTouchEnd={pararIncremento}>Decelerar</button>
+        <button className="bg-green-300 text-black hover:bg-green-200 p-2 rounded select-none" onContextMenu={bloquearCliqueDireito} onMouseLeave={pararIncremento}  onMouseDown={iniciarIncremento} onMouseUp={pararIncremento} onTouchStart={iniciarIncremento} onTouchEnd={pararIncremento}>Acelerar</button>
+        <button className="bg-red-300 text-black hover:bg-red-200 p-2 rounded select-none" onContextMenu={bloquearCliqueDireito} onMouseLeave={pararIncremento} onMouseDown={iniciarDecremento} onMouseUp={pararIncremento} onTouchStart={iniciarDecremento} onTouchEnd={pararIncremento}>Decelerar</button>
       </div>
     </div>
   )
